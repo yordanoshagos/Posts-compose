@@ -31,7 +31,8 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 
 
 @Composable
-fun PostsScreenImpl(paddingValues: PaddingValues,
+fun PostsScreenImpl(
+                    onClickPost: (Int) -> Unit,
     viewModel: PostsViewModel = viewModel()) {
 
     LaunchedEffect(Unit) {
@@ -51,7 +52,7 @@ fun PostsScreenImpl(paddingValues: PaddingValues,
         }
         uiState?.success != null -> {
             if (posts != null){
-                LazyColumn { items(posts!!){post-> PostCard(post)} }
+                LazyColumn { items(posts!!){post-> PostCard(post, onClickPost)} }
             }
 
         }
@@ -60,14 +61,14 @@ fun PostsScreenImpl(paddingValues: PaddingValues,
                 Text(text = uiState!!.error.toString())
             }
         }
-
     }
-
 }
 
 @Composable
-fun PostCard(post: Post){
-    Card (modifier = Modifier.fillMaxWidth(),
+fun PostCard(post: Post, onClickPost: (Int)-> Unit){
+    Card (
+        onClick = {onClickPost(post.id)},
+        modifier = Modifier.fillMaxWidth(),
         shape = RoundedCornerShape(8.dp),
         colors = CardDefaults.cardColors(containerColor = Color.White)
 
@@ -85,6 +86,8 @@ fun PostCard(post: Post){
 }
 
 
+
+
 @Preview(showBackground = true)
 @Composable
 fun PostsScreenPreview(){
@@ -95,5 +98,5 @@ fun PostsScreenPreview(){
         body = "est rerum tempore vitae\nsequi sint nihil reprehenderit dolor beatae ea dolores neque\nfugiat blanditiis voluptate porro vel nihil molestiae ut reiciendis\nqui aperiam non debitis possimus qui neque nisi nulla"
 
     )
-    PostCard(post)
+    PostCard(post, {} )
 }

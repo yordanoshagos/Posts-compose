@@ -4,6 +4,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.pulseshift.postscompose.model.Comment
 import com.pulseshift.postscompose.model.Post
 import com.pulseshift.postscompose.model.UIState
 import com.pulseshift.postscompose.repository.PostsRepository
@@ -13,30 +14,63 @@ import kotlinx.coroutines.launch
 
 class PostsViewModel: ViewModel() {
     val postsRepository = PostsRepository()
+    val posts = MutableLiveData<List<Post>>()
+    val uiState = MutableLiveData(UIState())
+    val post = MutableLiveData<Post>()
+    val comments = MutableLiveData<List<Comment>>()
 
-    private val _posts = MutableLiveData<List<Post>>()
-    val posts: LiveData<List<Post>> = _posts
-
-    private val _uiState = MutableLiveData(UIState())
-    val uiState: LiveData<UIState> = _uiState
-//    init {
-//        _uiState.value = UIState() // Assuming UIState has default constructor values
-//    }
 
 
     fun fetchPosts(){
 
         viewModelScope.launch {
-            _uiState.value = _uiState.value?.copy(isLoading = true)
+            uiState.value = uiState.value?.copy(isLoading = true)
             val response = postsRepository.fetchPosts()
             if (response.isSuccessful){
-                _uiState.value = _uiState.value?.copy(success = "Fetch posts successfully", isLoading = false)
-                _posts.postValue(response.body())
+                uiState.value = uiState.value?.copy(success = "Fetch posts successfully", isLoading = false)
+                posts.postValue(response.body())
             }
             else{
-                _uiState.value = _uiState.value?.copy(error = response.errorBody()?.string(), isLoading = false)
+                uiState.value = uiState.value?.copy(error = response.errorBody()?.string(), isLoading = false)
 
             }
+        }
+    }
+
+    fun fetchPostById(postId: Int){
+        viewModelScope.launch {
+            uiState.value = uiState.value?.copy(isLoading = true)
+            val  response = postsRepository.fetchPostById(postId)
+            if (response.isSuccessful){
+                uiState.value = uiState.value?.copy(isLoading = false,
+                    success = "Fetched post successfully")
+                post.postValue(response.body())
+            }
+            else{
+                uiState.value = uiState.value?.copy(isLoading = false,
+                    error = response.errorBody()?.string()
+                )
+
+            }
+        }
+    }
+
+    fun fetchPostComments(postId: Int){
+        viewModelScope.launch {
+            uiState.value = uiState.value?.copy(isLoading = true)
+            val response = postsRepository.fetchPostComments(postId)
+            if (response.isSuccessful){
+                uiState.value = uiState.value?.copy(isLoading = false,
+                    success = "Fetched comments successfully")
+                comments.postValue(response.body())
+            }
+            else{
+                uiState.value = uiState.value?.copy(isLoading = false,
+                    error = response.errorBody()?.string()
+                )
+
+        }
+
         }
     }
 }

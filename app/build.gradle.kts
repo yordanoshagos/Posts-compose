@@ -68,4 +68,5 @@ dependencies {
     implementation(libs.androidx.runtime.livedata)
     implementation(libs.androidx.lifecycle.viewmodel.compose)
     implementation(libs.logging.interceptor)
+    implementation(libs.androidx.navigation.compose)
 }
