@@ -25,6 +25,7 @@ import androidx.compose.ui.unit.dp
 import com.pulseshift.postscompose.model.Post
 import com.pulseshift.postscompose.viewmodel.PostsViewModel
 import androidx.compose.foundation.lazy.items
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
 import androidx.lifecycle.viewmodel.compose.viewModel
 
@@ -32,7 +33,11 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 @Composable
 fun PostsScreenImpl(paddingValues: PaddingValues,
     viewModel: PostsViewModel = viewModel()) {
-    viewModel.fetchPosts()
+
+    LaunchedEffect(Unit) {
+        viewModel.fetchPosts()
+    }
+
     val posts by viewModel.posts.observeAsState()
     val uiState by viewModel.uiState.observeAsState()
 

@@ -9,8 +9,7 @@ import com.pulseshift.postscompose.model.UIState
 import com.pulseshift.postscompose.repository.PostsRepository
 import kotlinx.coroutines.launch
 
-private val _uiState = MutableLiveData<UIState>(UIState())
-val uiState: LiveData<UIState> = _uiState
+
 
 class PostsViewModel: ViewModel() {
     val postsRepository = PostsRepository()
@@ -18,11 +17,11 @@ class PostsViewModel: ViewModel() {
     private val _posts = MutableLiveData<List<Post>>()
     val posts: LiveData<List<Post>> = _posts
 
-    private val _uiState = MutableLiveData<UIState>()
+    private val _uiState = MutableLiveData(UIState())
     val uiState: LiveData<UIState> = _uiState
-    init {
-        _uiState.value = UIState() // Assuming UIState has default constructor values
-    }
+//    init {
+//        _uiState.value = UIState() // Assuming UIState has default constructor values
+//    }
 
 
     fun fetchPosts(){
